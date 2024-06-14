@@ -1,0 +1,26 @@
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+
+  generate-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install git-cliff
+        run: |
+          #todo: update version number
+          curl -L -o git-cliff.deb \
+            https://github.com/orhun/git-cliff/releases/download/v2.3.0/git-cliff-2.3.0.deb
+          sudo apt install ./git-cliff.deb
+
+      - name: Generate all changelogs
+        run: |
+          git fetch --tags
+          ./.changelog/generate.sh all
