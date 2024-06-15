@@ -24,3 +24,7 @@ jobs:
         run: |
           git fetch --tags
           ./.changelog/generate.sh all
+
+      - name: Check for changes
+        run: |
+          ./.changelog/changed.sh
