@@ -26,3 +26,11 @@ jobs:
       - name: Run Changelog Script
         run: |
           ./.changelog/run.sh all
+
+      - name: Authenticate with Githuh CLI
+        run: |
+          echo ${{ secrets.MY_SECRET }} | gh auth login -p https --with-token
+
+      - name: List open PRs
+        run: |
+          gh pr list

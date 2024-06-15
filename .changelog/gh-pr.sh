@@ -25,6 +25,7 @@ if git show-ref --verify --quiet "refs/heads/$BRANCH_NAME"; then
   git checkout -f "$BRANCH_NAME"
 else
   git checkout -f -b "$BRANCH_NAME"
+  git push -u origin "$BRANCH_NAME" || true
 fi
 
 # Reset the branch to the state of GIT_CURRENT_BRANCH
@@ -41,7 +42,11 @@ git add "$GIT_CLIFF_CONTEXT" || true
 git commit -m "changelog: $VERSION"
 
 # push
-git push --force
-# --set-upstream origin "$BRANCH_NAME"
+git push --force --set-upstream origin "$BRANCH_NAME"
+
 # check if there's pr for this branch targeting the main branch
-PR_URL=$(gh pr list --head "$BRANCH_NAME" --base=$GIT_GIT_CURRENT_BRANCH --json url --jq '.[0].url')
+PR_URL=$(gh pr list --head "$BRANCH_NAME" --base=$GIT_CURRENT_BRANCH --json url --jq '.[0].url')
+
+if [ -z "$PR_URL" ]; then
+  gh pr create --title "changelog: $VERSION" --body "changelog: $VERSION" --head "$BRANCH_NAME" --base "$GIT_CURRENT_BRANCH"
+fi
