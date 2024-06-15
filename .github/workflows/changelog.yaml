@@ -20,11 +20,6 @@ jobs:
             https://github.com/orhun/git-cliff/releases/download/v2.3.0/git-cliff-2.3.0.deb
           sudo apt install ./git-cliff.deb
 
-      - name: Generate all changelogs
+      - name: Run Changelog Script
         run: |
-          git fetch --tags
-          ./.changelog/generate.sh all
-
-      - name: Check for changes
-        run: |
-          ./.changelog/changed.sh
+          ./.changelog/run.sh all
