@@ -52,13 +52,15 @@ function git-cliff-init() {
 
 function git-cliff-run(){
     git-cliff \
-      --bump -u
+      --bump -u \
+      --verbose
 }
 
 function git-cliff-run-context(){
   git-cliff \
     --bump --context -u \
-    --output ${GIT_CLIFF_CONTEXT}
+    --output ${GIT_CLIFF_CONTEXT} \
+    --verbose
 }
 
 function has_changed(){
