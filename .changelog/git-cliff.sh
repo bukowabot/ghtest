@@ -38,12 +38,9 @@ function git-cliff-run(){
 }
 
 function git-cliff-run-context(){
-  _GIT_CLIFF_PREPEND=${GIT_CLIFF_PREPEND}
-  unset GIT_CLIFF_PREPEND
   git-cliff \
-    --bump --context \
+    --bump --context -u \
     --output ${GIT_CLIFF_CONTEXT}
-  GIT_CLIFF_PREPEND=${_GIT_CLIFF_PREPEND}
 }
 
 function has_changed(){
