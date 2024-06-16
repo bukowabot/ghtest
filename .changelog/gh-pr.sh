@@ -37,8 +37,11 @@ git add "$GIT_CLIFF_OUTPUT" || true
 git add "$GIT_CLIFF_PREPEND" || true
 git add "$GIT_CLIFF_CONTEXT" || true
 
+# Set the PR title and body
+PR_TITLE="changelog($CHANGELOG_PACKAGE_NAME): $VERSION"
+
 # Commit the changelog
-git commit -m "changelog: $VERSION"
+git commit -m "${PR_TITLE}"
 
 # Push the branch
 git push --force --set-upstream origin "$BRANCH_NAME"
@@ -46,13 +49,9 @@ git push --force --set-upstream origin "$BRANCH_NAME"
 # Create a PR if it doesn't exist
 PR_URL=$(gh pr list --head "$BRANCH_NAME" --base=$GIT_CURRENT_BRANCH --json url --jq '.[0].url')
 
-# Set the PR title and body
-PR_TITLE="changelog($CHANGELOG_PACKAGE_NAME): $VERSION"
-
-
 if [ -z "$PR_URL" ]; then
-  gh pr create --title "${PR_TITLE}" --head "$BRANCH_NAME" --base "$GIT_CURRENT_BRANCH"
+  gh pr create --title "${PR_TITLE}" --head "$BRANCH_NAME" --base "$GIT_CURRENT_BRANCH" --body "Hey!"
 else
   # make sure to properly name the PR
-  gh pr edit $PR_URL --title $PR_TITLE
+  gh pr edit $PR_URL --title "${PR_TITLE}"
 fi
