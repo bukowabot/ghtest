@@ -39,8 +39,4 @@ jobs:
 
       - name: Run Changelog Script
         run: |
-          ./.changelog/run.sh all
-
-      - name: Commit and push changes
-        run: |
-          ./.changelog/gh-pr.sh ./project-ghrp-npm/CHANGELOG/cliff.env
+          ./.changelog/git-cliff.sh
