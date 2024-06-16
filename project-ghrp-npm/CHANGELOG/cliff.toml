@@ -81,3 +81,6 @@ sort_commits = "oldest"
 [remote.github]
 owner = "bukowabot"
 repo = "ghtest"
+
+[bump]
+initial_tag="project-ghrp-npm-v0.1.0"
