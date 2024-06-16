@@ -5,30 +5,34 @@ PROJECTS=(
   "project-ghrp-npm"
 )
 
-run(){
+run_changelog_generation() {
+  local project="$1"
+  local changelog_env="./$project/CHANGELOG/cliff.env"
 
-  ./.changelog/git-cliff.sh ${1}/CHANGELOG/cliff.env
+  # Source cliff.env for the project
+  source ./.changelog/git-cliff.sh "$changelog_env"
 
-  if ./.changelog/has-changed.sh ${1}/CHANGELOG/cliff.env; then
-    echo "Changes detected after generating the changelog."
+  # Check if there are changes detected
+  if ./.changelog/has-changed.sh "$changelog_env"; then
+    echo "Changes detected after generating the changelog for $project."
   else
-    echo "No changes detected after generating the changelog."
+    echo "No changes detected after generating the changelog for $project."
   fi
 }
 
-# If the first argument is "all", then generate the changelog for all projects
+# Main logic starts here
 if [ "$1" == "all" ]; then
+  # Generate changelog for all projects
   for project in "${PROJECTS[@]}"; do
-    run $project
+    (run_changelog_generation "$project")
   done
-  exit 0
-# If the first argument is not empty, then generate the changelog for the specified project
-  else
-    # If the directory does not exist, then exit
-    if [ ! -d "$1" ]; then
-      echo "Directory '$1' does not exist."
-      exit 1
-    fi
-    run $1
-    exit 0
+elif [ -d "$1" ]; then
+  # Generate changelog for specified project
+  (run_changelog_generation "$1")
+else
+  # Directory doesn't exist
+  echo "Directory '$1' does not exist."
+  exit 1
 fi
+
+exit 0

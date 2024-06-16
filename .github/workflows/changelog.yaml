@@ -8,10 +8,27 @@ jobs:
 
   generate-changelog:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.MY_SECRET }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          token: ${{ secrets.MY_SECRET }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "no-reply@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Authenticate with Githuh CLI
+#        echo ${{ secrets.MY_SECRET }} | gh auth login -p https --with-token
+#        git config --local --unset credential.helper && gh auth setup-git
+        run: |
+          gh pr list
 
       - name: Install git-cliff
         run: |
@@ -23,3 +40,7 @@ jobs:
       - name: Run Changelog Script
         run: |
           ./.changelog/run.sh all
+
+      - name: Commit and push changes
+        run: |
+          ./.changelog/gh-pr.sh ./project-ghrp-npm/CHANGELOG/cliff.env
