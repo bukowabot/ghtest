@@ -1,8 +1,23 @@
 #!/bin/bash -l
 set -euxo pipefail
 
-# Avoid file expansion when passing parameters like with '*'
-set -o noglob
+# Text colors
+BLACK='\e[30m'
+RED='\e[31m'
+GREEN='\e[32m'
+YELLOW='\e[33m'
+BLUE='\e[34m'
+MAGENTA='\e[35m'
+CYAN='\e[36m'
+WHITE='\e[37m'
+
+print_color() {
+  local color=$1
+  local text=$2
+  local NC='\e[0m'
+  echo -e "${color}${text}${NC}"
+}
+
 
 # Source first argument if it exists
 if [ -n "${1-}" ]; then
@@ -10,6 +25,9 @@ if [ -n "${1-}" ]; then
   source "$1"
   set +o allexport
 fi
+
+# Avoid file expansion when passing parameters like with '*'
+set -o noglob
 
 function git-cliff-init() {
   : "${GIT_CLIFF_IGNORE_TAGS:-""}";
@@ -45,10 +63,11 @@ function git-cliff-run-context(){
 
 function has_changed(){
   if ! git status --short --porcelain | cut -c 4- | grep -q "$GIT_CLIFF_OUTPUT"; then
-    echo "No changes detected after generating the changelog."
+    print_color ${GREEN} "No changes detected after generating the changelog."
     exit 0
   else
-    echo "Changes detected after generating the changelog."
+    print_color ${RED} "Changes detected after generating the changelog."
+    git status
   fi
 }
 
@@ -82,6 +101,8 @@ function git-commit(){
   COMMIT_MESSAGE="changelog: ${VERSION:?}"
 
   git commit --status -m "${COMMIT_MESSAGE?}"
+
+  git status
   git show -q
 }
 
@@ -110,7 +131,7 @@ else
     git-cliff-run-context
     git-prepare
     git-checkout
-    git-cliff-run
+    git-cliff-run && has_changed
     git-cliff-run-context
     git-commit
     git-push
