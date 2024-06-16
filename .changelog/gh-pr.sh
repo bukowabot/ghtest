@@ -40,14 +40,15 @@ git add "$GIT_CLIFF_CONTEXT" || true
 # Set the PR title and body
 PR_TITLE="changelog($CHANGELOG_PACKAGE_NAME): $VERSION"
 
-# Check if there are changes to commit
-if git diff-index --quiet HEAD; then
-  echo "No changes to commit"
-  exit 0
-fi
+git diff-index --quiet HEAD
 
-# Commit the changelog
-git commit -m "${PR_TITLE}"
+# Check if there are changes to commit
+if ! git diff-index --quiet HEAD; then
+  echo "There are changes to commit"
+  git commit -m "${PR_TITLE}"
+else
+  echo "No changes to commit"
+fi
 
 # Push the branch
 git push --force --set-upstream origin "$BRANCH_NAME"
