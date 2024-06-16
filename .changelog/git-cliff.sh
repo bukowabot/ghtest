@@ -1,15 +1,15 @@
 #!/bin/bash -l
 set -euxo pipefail
 
-# Avoid file expansion when passing parameters like with '*'
-set -o noglob
-
 # Source first argument if it exists
 if [ -n "${1-}" ]; then
   set -o allexport
   source "$1"
   set +o allexport
 fi
+
+# Avoid file expansion when passing parameters like with '*'
+set -o noglob
 
 function git-cliff-init() {
   : "${GIT_CLIFF_IGNORE_TAGS:-""}";
@@ -49,6 +49,7 @@ function has_changed(){
     exit 0
   else
     echo "Changes detected after generating the changelog."
+    git status
   fi
 }
 
@@ -82,6 +83,8 @@ function git-commit(){
   COMMIT_MESSAGE="changelog: ${VERSION:?}"
 
   git commit --status -m "${COMMIT_MESSAGE?}"
+
+  git status
   git show -q
 }
 
@@ -110,7 +113,7 @@ else
     git-cliff-run-context
     git-prepare
     git-checkout
-    git-cliff-run
+    git-cliff-run && has_changed
     git-cliff-run-context
     git-commit
     git-push

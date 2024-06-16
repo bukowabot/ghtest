@@ -39,4 +39,4 @@ jobs:
 
       - name: Run Changelog Script
         run: |
-          ./.changelog/git-cliff.sh
+          ./.changelog/git-cliff.sh project-ghrp-npm/CHANGELOG/cliff.env
