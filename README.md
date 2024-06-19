@@ -1,4 +1,4 @@
-
+[DEPRECATED] Use https://github.com/googleapis/release-please
 ## gh-monorepo-auto-release-poc
 
 This is a proof of concept for a github repository workflow that automatically releases a monorepo when a change is made to a package within the monorepo.
